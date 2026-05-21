@@ -1,0 +1,21 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# AWS
+.aws/
+# Terraform variable files
+*.tfvars
+
+
+
+# Environment files
+.env
+
+# OS
+.DS_Store
+
+# Logs
+*.log
