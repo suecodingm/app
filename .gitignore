@@ -1,21 +1,17 @@
-# Terraform
-.terraform/
+**/.terraform/*
 *.tfstate
 *.tfstate.*
-crash.log
+*.pem
+.terraform.lock.hcl
 
-# AWS
-.aws/
-# Terraform variable files
-*.tfvars
+# kubeconfig
+kubeconfig
 
+# ssh
+.ssh/
 
+# vscode
+.vscode/
 
-# Environment files
-.env
-
-# OS
-.DS_Store
-
-# Logs
+# logs
 *.log
