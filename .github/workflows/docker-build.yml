@@ -43,6 +43,15 @@ jobs:
         mkdir -p ~/.kube
         echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
+    - name: Create namespace
+      run: |
+        kubectl create namespace demo --dry-run=client -o yaml | kubectl apply -f -
+
+
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f kubernetes/
+
+    - name: Restart deployment
+      run: |
+        kubectl rollout restart deployment/nginx-demo -n demo

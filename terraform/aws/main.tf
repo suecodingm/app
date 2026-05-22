@@ -44,16 +44,50 @@ resource "aws_security_group" "k3s_sg" {
 
 resource "aws_instance" "k3s_server" {
   ami           = "ami-0c101f26f147fa7fd"
-  instance_type = "t3.small"
+  instance_type = "t3.medium"
   key_name = "tfm-k3s-key"
   vpc_security_group_ids = [aws_security_group.k3s_sg.id]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              curl -sfL https://get.k3s.io | sh -
-              EOF
+ user_data = <<-EOF
+	#!/bin/bash
+	exec > /var/log/user-data.log 2>&1
 
+	echo "=== START USER DATA ==="
+
+	# esperar red
+	sleep 30
+
+	# instalar curl por si acaso
+	yum install -y curl
+
+	# metadata
+	TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+	-H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+	PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+	-s http://169.254.169.254/latest/meta-data/public-ipv4)
+
+	echo "PUBLIC IP: $PUBLIC_IP"
+
+	# instalar k3s
+	curl -sfL https://get.k3s.io | sh -s - server --tls-san $PUBLIC_IP
+
+	echo "=== K3S INSTALLED ==="
+
+	sleep 20
+
+	systemctl status k3s
+
+	kubectl get nodes || true
+
+	echo "=== END USER DATA ==="
+EOF  
   tags = {
     Name = "k3s-server"
   }
 }
+
+output "instance_ip" {
+  value = aws_instance.k3s_server.public_ip
+}
+
