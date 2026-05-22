@@ -54,4 +54,4 @@ jobs:
 
     - name: Restart deployment
       run: |
-        kubectl rollout restart deployment/nginx-tfm -n demo
+        kubectl rollout restart deployment/nginx-demo -n demo

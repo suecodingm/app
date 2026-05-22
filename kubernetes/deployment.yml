@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: nginx-demo
-        image: ghcr.io/suecodingm/nginx-demo:latest
+        image: ghcr.io/suecodingm/nginx-tfm:latest
 
         ports:
         - containerPort: 80
